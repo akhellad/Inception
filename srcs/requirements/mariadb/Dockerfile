@@ -1,27 +1,16 @@
-FROM debian:bullseye
+FROM alpine:3.18
 
-RUN apt update -y
+RUN apk update && apk upgrade && apk add --no-cache mariadb mariadb-client
 
-RUN apt upgrade -y
+RUN mkdir -p /run/mysqld /var/lib/mysql
 
-RUN apt-get install mariadb-server mariadb-client procps -y
+RUN sed -i "s|skip-networking|#skip-networking|g" /etc/my.cnf.d/mariadb-server.cnf
 
-RUN mkdir -p /var/run/mysqld && \
-chown -R mysql:mysql /var/run/mysqld && \
-chmod 777 /var/run/mysqld
+RUN mariadb-install-db --user=mysql --datadir=/var/lib/mysql --skip-test-db
 
-RUN mkdir -p /var/lib/mysql && \
-    chown -R mysql /var/lib/mysql && \
-chmod 777 /var/lib/mysql
-
-COPY conf/50-server.cnf	/etc/mysql/mariadb.conf.d/50-server.cn
-
-COPY tools/config.sh /usr/bin/config.sh
-
-RUN chmod +x /usr/bin/config.sh
+COPY ./conf/config.sh /config.sh
+RUN chmod +x /config.sh
 
 EXPOSE 3306
 
-RUN service mariadb start
-
-CMD ["./usr/bin/config.sh"]
+ENTRYPOINT ["/config.sh"]
