@@ -7,7 +7,7 @@ done
 
 sed -i "s/listen = localhost:9000/listen = 9000/g" /etc/php81/php-fpm.d/www.conf
 
-# rm /var/www/wordpress/wp-config.php
+rm /var/www/wordpress/wp-config.php
 wp config create --allow-root \
 	--dbname=${DB_NAME} \
 	--dbuser=${DB_USER} \
