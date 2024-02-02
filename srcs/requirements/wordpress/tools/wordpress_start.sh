@@ -1,22 +1,20 @@
 #!/bin/sh
 # set listening port for php fpm
 until mysql -h $DB_HOST -u $DB_USER -p$DB_PASS -e '' 2>/dev/null;do
-	echo "waiting for mariadb..."
+	echo "waiting for mariadb to start..."
 	sleep 1
 done
+sed -i "s/listen = 127.0.0.1:9000/listen = 0.0.0.0:9000/g" /etc/php81/php-fpm.d/www.conf
 
-sed -i "s/listen = localhost:9000/listen = 9000/g" /etc/php81/php-fpm.d/www.conf
-
-rm /var/www/wordpress/wp-config.php
+# start services
 wp config create --allow-root \
 	--dbname=${DB_NAME} \
 	--dbuser=${DB_USER} \
 	--dbpass=${DB_PASS} \
 	--dbhost=${DB_HOST} \
 	--force
-	--url=${DOMAIN_NAME} \
 wp core install --allow-root \
-	--title=crapCeption \
+	--title=PAINCEPTION \
 	--url=${DOMAIN_NAME} \
 	--admin_user=${WP_ADMIN_USER} \
 	--admin_password=${WP_ADMIN_PASS} \

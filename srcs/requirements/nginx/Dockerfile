@@ -9,6 +9,9 @@ RUN openssl req -x509 -nodes -days 42 -newkey rsa:2048 -keyout /etc/ssl/guguKuku
 COPY ./conf/nginx.conf /etc/nginx/nginx.conf
 RUN chmod +x /etc/nginx/nginx.conf
 
+RUN  chmod -R 755 /var/www/*
+# RUN  chow -R www-data:www-data
+
 EXPOSE 443
 
 CMD ["nginx", "-g", "daemon off;"]
