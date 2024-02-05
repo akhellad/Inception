@@ -1,12 +1,16 @@
-#!bin/sh
+#!/bin/sh
 
+# Modifie la propriété des répertoires pour l'utilisateur mysql
 chown -R mysql:mysql /var/lib/mysql /run/mysqld
 
+# Attend un peu pour s'assurer que tout est prêt
 sleep 10
 
+# Vérifie si la base de données spécifiée n'existe pas déjà
 if [ ! -d "/var/lib/mysql/${DB_NAME}" ]; then
 
-        cat << EOF > /tmp/db.sql
+    # Crée un fichier SQL temporaire pour configurer la base de données
+    cat << EOF > /tmp/db.sql
 USE mysql;
 FLUSH PRIVILEGES;
 DELETE FROM mysql.user WHERE User='';
@@ -17,10 +21,16 @@ CREATE USER '${DB_USER}'@'%' IDENTIFIED by '${DB_PASS}';
 GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${DB_USER}'@'%';
 FLUSH PRIVILEGES;
 EOF
-        mariadbd --user=mysql --bootstrap < /tmp/db.sql
-        rm -f /tmp/db.sql
+
+    # Initialise la base de données avec les configurations spécifiées
+    mariadbd --user=mysql --bootstrap < /tmp/db.sql
+    
+    # Supprime le fichier SQL temporaire
+    rm -f /tmp/db.sql
 else
-        echo "Database already exists"
+    # Message indiquant que la base de données existe déjà
+    echo "Database already exists"
 fi
 
+# Exécute le serveur de base de données MariaDB
 exec mariadbd --user=mysql --bind-address=0.0.0.0
