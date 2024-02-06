@@ -65,8 +65,8 @@ Before launching the project, you need to create a `.env` file at the root of th
 
 After successfully launching the services:
 
-- **Web Server**: Your web application will be accessible at `http://localhost`.
-- **Admin Interface**: To manage the database, access the admin tool (like phpMyAdmin) at `http://localhost:<admin_port>`. Be sure to replace `<admin_port>` with the actual port number you configured in your `docker-compose.yml` file.
+- **Web Server**: Your web application will be accessible at `https://localhost`.
+- **Admin Interface**: To manage the database, access the admin tool (like phpMyAdmin) at `https://localhost:<admin_port>`. Be sure to replace `<admin_port>` with the actual port number you configured in your `docker-compose.yml` file.
 
 ## Cleanup
 
